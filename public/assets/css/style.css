@@ -1,0 +1,35 @@
+body {
+  background: linear-gradient(hsl(190,100%,50%),hsl(160,100%,50%));
+  background-repeat: no-repeat;
+  min-height: calc(100vh - 4.15em);
+  color: #333;
+}
+li.devoured {
+  color: #999;
+}
+.input-field label {
+  color: #555;
+}
+.input-field input[type=text] {
+  border-bottom: 1px solid #555;
+}
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #333;
+}
+.input-field input[type=text].invalid {
+  border-bottom: 1px solid #000;
+  box-shadow: 0 1px 0 0 #000;
+}
+
+.material-icons {
+  cursor: help;
+}
+
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 3em;
+  }
+  h2 {
+    font-size: 2em;
+  }
+}

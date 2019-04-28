@@ -1,0 +1,49 @@
+<div class="center-align">
+  <h1>The Burger Place</h1>
+  <div class="container">
+    <div class="row input-field">
+      <form id="submit-burger">
+        <label for="addburger">Add a burger</label>
+        <input type="text" name="name" id="addburger" placeholder="Burger Name">
+        <div class="input-field">
+          <select multiple>
+            <option value="" disabled>Choose your Ingredients</option>
+            {{#each ingredients}}
+            <option value="{{id}}">{{ingredient_name}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <button class="btn">Add</button>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12 m6">
+      <h2>Burgers to Eat</h2>
+      <ul class="collection">
+        {{#each burgers}}
+        {{#unless devoured}}
+        <li class="collection-item left-align">
+          <span class="col s9 m10">{{burger_name}}
+            <i class="material-icons ingredient-info tooltipped" data-id="{{id}}">info</i>
+          </span>
+          <button class="devour btn" data-id="{{id}}">Eat me</button>
+        </li>
+        {{/unless}}
+        {{/each}}
+      </ul>
+    </div>
+    <div class="col s12 m6">
+      <h2>Devoured Burgers</h2>
+      <ul class="collection">
+        {{#each burgers}}
+        {{#if devoured}}
+        <li class="devoured collection-item">
+          {{burger_name}}
+        </li>
+        {{/if}}
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+</div>
