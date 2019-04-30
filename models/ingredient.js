@@ -1,13 +1,18 @@
-const orm = require('../config/orm');
-
-const ingredient = {
-  view: function (cbfunc) {
-    orm.selectAll('ingredients', cbfunc);
-  },
-  create: function (ingredientName, cbfunc) {
-    const newingredient = { ingredient_name: ingredientName };
-    orm.insertOne('ingredients', newingredient, cbfunc);
+module.exports = (sequelize, DataTypes) => {
+  const Ingredients = sequelize.define('Ingredients', {
+    ingredient_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    }
+  });
+  Ingredients.associate = function (models) {
+    Ingredients.belongsToMany(models.Burgers, {
+      through: 'Burger_Ingredients',
+      foreignKey: 'ingredientID'
+    });
   }
+  return Ingredients;
 }
-
-module.exports = ingredient;

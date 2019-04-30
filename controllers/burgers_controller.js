@@ -1,42 +1,47 @@
 const express = require('express');
-const burger = require('../models/burger');
-const ingredients = require('../models/ingredient')
-
+const db = require('../models');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  const hbObj = {};
-  burger.view(data => {
-    hbObj.burgers = data;
-    ingredients.view(data => {
-      hbObj.ingredients = data;
-      res.render('index', hbObj);
-    })
-  })
+  Promise.all([
+    db.Burgers.findAll({ attributes: ['burger_name', 'id', 'devoured'] }),
+    db.Ingredients.findAll({ attributes: ['ingredient_name', 'id'] })
+  ]).then(result => { res.render('index', { burgers: result[0], ingredients: result[1] }) })
 })
 
 router.get('/api/burger/:id', (req, res) => {
-  burger.ingredients(parseInt(req.params.id), data => {
-    res.json(data);
-  })
+  db.Ingredients.findAll({
+    attributes: ['id', 'ingredient_name'],
+    include: {
+      model: db.Burgers,
+      where: { id: req.params.id },
+      attributes: ['burger_name', 'id']
+    },
+  }).then(data => { res.json(data.map(e => e.ingredient_name)) })
 })
 
 router.post('/api/burger', (req, res) => {
-  burger.create(req.body.name, (data) => {
-    const burgerId = data.insertId;
-    burger.setIngredients(burgerId, req.body.ingredients, data => {
-      res.json(data);
+  db.Burgers.create({ burger_name: req.body.name })
+    .then(data => {
+      const newBurgerIngredients = [];
+      req.body.ingredients.forEach(item => {
+        newBurgerIngredients.push({
+          burgerID: data.id,
+          ingredientID: item
+        })
+      })
+      db.Burger_Ingredients.bulkCreate(newBurgerIngredients)
+        .then(result => { res.json(result) })
     })
-  })
 })
 
 router.put('/api/burger/:id', (req, res) => {
-  burger.devour(parseInt(req.params.id), (data) => {
-    if (data.changedRows === 0) {
-      return res.status(404).end();
-    }
-    res.status(200).end();
+  db.Burgers.update({ devoured: true }, {
+    where: { id: req.params.id }
   })
+    .then(data => {
+      res.end()
+    })
 })
 
 module.exports = router;

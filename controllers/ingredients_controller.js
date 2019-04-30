@@ -1,18 +1,18 @@
 const express = require('express');
-const ingredient = require('../models/ingredient');
+const db = require('../models');
 
 const router = express.Router();
 
 router.get('/api/ingredients', (req, res) => {
-  ingredient.view(data => {
-    res.json(data);
-  })
+  db.Ingredients.findAll({ attributes: ['ingredient_name', 'id'] })
+    .then(data => {
+      res.json(data);
+    })
 })
 
 router.post('/api/ingredients', (req, res) => {
-  ingredient.create(req.body.name, data => {
-    res.json(data.insertId);
-  })
+  db.Ingredients.create({ ingredient_name: req.body.name })
+    .then(data => { res.json(data) })
 })
 
 module.exports = router;

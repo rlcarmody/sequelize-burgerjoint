@@ -45,7 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(`/api/burger/${id}`)
       .then(response => response.json())
       .then(response => {
-        const ingredients = response.map(e => e.ingredient_name).join(', ');
+        const ingredients = response.map(item => {
+          return item.charAt(0).toUpperCase() + item.slice(1);
+        }).join('<br>')
         e.setAttribute('data-tooltip', ingredients);
       });
   })
